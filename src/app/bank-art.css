@@ -1,0 +1,137 @@
+.hero-art.bank-notifications{
+  grid-area:art;
+  display:block;
+  position:relative;
+  width:100%;
+  max-width:500px;
+  height:auto;
+  min-height:260px;
+  min-width:0;
+  margin:0;
+  transform:none;
+  align-self:start;
+  justify-self:start;
+  isolation:isolate;
+}
+.bank-art-stage{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:10px;
+  width:100%;
+  min-width:0;
+  min-height:260px;
+  padding:8px 14px;
+  margin:0;
+  isolation:isolate;
+}
+.bank-art-shadow{
+  position:absolute;
+  z-index:-1;
+  left:16%;
+  right:12%;
+  bottom:1px;
+  height:30px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,#7cba3b20,transparent 70%);
+}
+.bank-art-form{
+  position:absolute;
+  z-index:-1;
+  inset:12% 13% 10% 14%;
+  border-radius:43% 57% 55% 45% / 45% 42% 58% 55%;
+  background:radial-gradient(ellipse at 26% 14%,#edffd6 0%,#d2f4a2 32%,#b8e579 68%,#a2ce69 100%);
+  box-shadow:inset 10px 12px 24px #f4ffe080,inset -16px -14px 26px #6a9a2820;
+  transform:rotate(-7deg);
+}
+.bank-art-form::before{
+  content:"";
+  position:absolute;
+  inset:12px 22px 20px 15px;
+  border-radius:inherit;
+  border:1px solid #f5ffe680;
+  border-bottom-color:transparent;
+  border-right-color:transparent;
+}
+.bank-art-form>span{
+  position:absolute;
+  width:36%;
+  height:65%;
+  left:10%;
+  top:8%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,#f4ffdd80,transparent 69%);
+  transform:rotate(12deg);
+}
+.bank-art-spark{position:absolute;border-radius:50%;background:#caf390}
+.bank-art-spark-one{width:9px;height:9px;top:5px;right:7px;box-shadow:inset -2px -2px 4px #80b84125}
+.bank-art-spark-two{width:5px;height:5px;bottom:10px;right:9px;background:#d5dfc7}
+.bank-notice{
+  position:relative;
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  width:min(342px,88%);
+  min-width:0;
+  min-height:74px;
+  padding:7px 12px;
+  gap:11px;
+  border:1px solid #e5ebdd;
+  border-radius:17px;
+  background:linear-gradient(135deg,#fffffffd,#fffffff5);
+  box-shadow:0 9px 25px #29451810,0 2px 5px #29451805,inset 0 1px 0 #fff;
+  transform-origin:center;
+}
+.bank-notice-sber{align-self:flex-start;transform:rotate(-1.2deg)}
+.bank-notice-tbank{align-self:flex-end;transform:rotate(1.2deg);z-index:1}
+.bank-notice-alfa{align-self:flex-start;transform:rotate(-.8deg)}
+.bank-notice-icon{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px}
+.bank-notice-icon>svg{display:block;width:34px;height:34px;flex-shrink:0}
+.bank-notice-icon-tbank>svg{width:32px;height:32px}
+.bank-notice-icon-alfa>svg{width:34px;height:34px}
+.bank-notice-copy{display:grid;gap:2px;min-width:0;overflow-wrap:anywhere}
+.bank-notice-name{color:#666f5f;font-size:11px;font-weight:500;letter-spacing:.01em;line-height:1.25}
+.bank-notice-description{color:#53604c;font-size:11px;line-height:1.4;white-space:normal;letter-spacing:-.01em}
+.bank-notice-description b{font-weight:600;color:#323c2b}
+.bank-notice-amount{color:#20271c;font-size:20px;font-weight:600;letter-spacing:-.045em;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bank-notice-check{display:grid;place-items:center;color:#70904f;background:#f0f6e9;border-radius:50%;width:20px;height:20px;margin-left:auto;flex:0 0 20px}
+@media(min-width:601px) and (max-width:1099px){
+  .hero-art.bank-notifications{max-width:480px;min-height:340px;align-self:center}
+  .bank-art-stage{min-height:340px;padding:10px 8px;gap:18px}
+  .bank-notice{width:min(356px,96%);min-height:88px;padding:10px;gap:9px}
+  .bank-notice-amount{font-size:22px}
+  .bank-art-form{inset:9% 6% 8% 9%;transform:rotate(-6deg)}
+}
+@media(max-width:600px){
+  .hero-art.bank-notifications{
+    display:block;
+    max-width:none;
+    min-height:250px;
+    padding:8px;
+    border:1px solid #e3e9d9;
+    border-radius:22px;
+    background:#f3f7eb;
+  }
+  .bank-art-stage{max-width:460px;min-height:232px;padding:2px 6px;margin-inline:auto;gap:8px}
+  .bank-notice{width:min(360px,94%);min-height:70px;padding:6px 10px;gap:8px;border-radius:14px}
+  .bank-notice-sber{transform:rotate(-1deg)}
+  .bank-notice-tbank{transform:rotate(1deg)}
+  .bank-notice-alfa{transform:rotate(-.7deg)}
+  .bank-notice-icon{width:30px;height:30px;flex-basis:30px}
+  .bank-notice-icon>svg{width:30px;height:30px}
+  .bank-notice-icon-tbank>svg{width:29px;height:29px}
+  .bank-notice-icon-alfa>svg{width:30px;height:30px}
+  .bank-notice-check{width:18px;height:18px;flex-basis:18px}
+  .bank-notice-check>svg{width:11px;height:11px}
+  .bank-art-form{inset:5px 2px;border-radius:19px;transform:none;opacity:.65}
+  .bank-art-shadow{bottom:0;height:18px;opacity:.5}
+  .bank-art-spark-one{top:0;right:1px}
+  .bank-art-spark-two{bottom:1px;right:2px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .bank-notice{animation:bank-notice-appear .65s ease both}
+  .bank-notice-tbank{animation-delay:.08s}
+  .bank-notice-alfa{animation-delay:.16s}
+  @keyframes bank-notice-appear{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+}

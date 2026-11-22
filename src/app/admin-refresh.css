@@ -1,0 +1,36 @@
+.adm-root .adm-refresh-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dce5d4;
+  border-radius: 11px;
+  background: #f4f8ef;
+  color: #4d6b38;
+}
+
+.adm-root .adm-refresh-button:hover:not(:disabled) {
+  background: #e8f2df;
+  border-color: #b6cea1;
+  color: #355a20;
+}
+
+.adm-root .adm-refresh-button:disabled {
+  cursor: progress;
+  opacity: 1;
+}
+
+.adm-refresh-button svg {
+  stroke-width: 2;
+  transform-origin: center;
+}
+
+.adm-refresh-button[aria-busy="true"] svg {
+  animation: adm-refresh-rotate 700ms linear infinite;
+}
+
+@keyframes adm-refresh-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-refresh-button[aria-busy="true"] svg { animation: none; }
+}

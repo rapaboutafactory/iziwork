@@ -1,0 +1,28 @@
+import { pgTable, text, uuid, timestamp, boolean, integer, jsonb, numeric, uniqueIndex, index } from 'drizzle-orm/pg-core';
+import type { SiteContent, SocialLinks, Network } from '../contracts';
+const time = (name:string) => timestamp(name,{withTimezone:true,mode:'date'});
+export const campaigns = pgTable('campaigns',{
+ id:uuid('id').primaryKey().defaultRandom(),name:text('name').notNull(),category:text('category').$type<'offline'|'online'>(),budget:numeric('budget',{mode:'number'}).notNull().default(0),status:text('status').notNull().default('active'),createdAt:time('created_at').notNull().defaultNow()
+});
+export const sources = pgTable('sources',{
+ id:uuid('id').primaryKey().defaultRandom(),name:text('name').notNull(),code:text('code').notNull().unique(),printCode:text('print_code').notNull().unique(),campaignId:uuid('campaign_id').references(()=>campaigns.id),category:text('category').notNull(),platform:text('platform').notNull(),partner:text('partner').notNull().default(''),city:text('city').notNull().default(''),district:text('district').notNull().default(''),placement:text('placement').notNull().default(''),material:text('material').notNull().default(''),creative:text('creative').notNull().default(''),cost:numeric('cost',{mode:'number'}).notNull().default(0),launchDate:text('launch_date').notNull().default(''),active:boolean('active').notNull().default(true),comments:text('comments').notNull().default(''),utmSource:text('utm_source').notNull().default(''),utmMedium:text('utm_medium').notNull().default(''),utmCampaign:text('utm_campaign').notNull().default(''),utmContent:text('utm_content').notNull().default(''),utmTerm:text('utm_term').notNull().default(''),isTest:boolean('is_test').notNull().default(false),links:jsonb('links').$type<SocialLinks>().notNull().default({vk:'',telegram:'',max:''}),createdAt:time('created_at').notNull().defaultNow()
+},t=>[index('source_campaign_idx').on(t.campaignId)]);
+// Codes/aliases share a namespace. Existing rows never change; old printed links cannot be reassigned.
+export const aliases = pgTable('source_aliases',{code:text('code').primaryKey(),sourceId:uuid('source_id').notNull().references(()=>sources.id)});
+export const settings = pgTable('settings',{id:text('id').primaryKey(),value:jsonb('value').$type<Record<string,unknown>>().notNull()});
+export const admins = pgTable('admins',{id:uuid('id').primaryKey().defaultRandom(),email:text('email').notNull().unique(),passwordHash:text('password_hash').notNull(),createdAt:time('created_at').notNull().defaultNow()});
+export const adminSessions = pgTable('admin_sessions',{id:text('id').primaryKey(),adminId:uuid('admin_id').notNull().references(()=>admins.id),csrf:text('csrf').notNull(),expiresAt:time('expires_at').notNull()});
+export const sessions = pgTable('sessions',{
+ id:uuid('id').primaryKey(),firstSourceId:uuid('first_source_id').references(()=>sources.id),lastSourceId:uuid('last_source_id').references(()=>sources.id),firstAttribution:jsonb('first_attribution').$type<Attribution>().notNull(),lastAttribution:jsonb('last_attribution').$type<Attribution>().notNull(),createdAt:time('created_at').notNull().defaultNow(),lastAt:time('last_at').notNull().defaultNow()
+});
+export interface Attribution {kind:'source'|'utm'|'referrer'|'direct';sourceId:string|null;utm:Record<string,string>;referrer:string}
+export const events = pgTable('events',{
+ id:uuid('id').primaryKey(),requestId:text('request_id').notNull().unique(),type:text('type').notNull(),sourceId:uuid('source_id').references(()=>sources.id),campaignId:uuid('campaign_id').references(()=>campaigns.id),sessionId:uuid('session_id').references(()=>sessions.id,{onDelete:'set null'}),network:text('network').$type<Network>(),attribution:jsonb('attribution').$type<Attribution>().notNull(),isTest:boolean('is_test').notNull().default(false),clean:boolean('clean').notNull(),reasons:jsonb('reasons').$type<string[]>().notNull(),device:text('device').notNull(),browser:text('browser').notNull(),createdAt:time('created_at').notNull().defaultNow()
+},t=>[index('event_time_idx').on(t.createdAt),index('event_source_time_idx').on(t.sourceId,t.createdAt),index('event_session_idx').on(t.sessionId),index('event_campaign_time_idx').on(t.campaignId,t.createdAt)]);
+export const dedup = pgTable('dedup',{key:text('key').primaryKey(),expiresAt:time('expires_at').notNull()});
+export const rateLimits = pgTable('rate_limits',{key:text('key').primaryKey(),count:integer('count').notNull(),expiresAt:time('expires_at').notNull()});
+export const conversions = pgTable('conversions',{
+ id:uuid('id').primaryKey().defaultRandom(),externalId:text('external_id').notNull().unique(),sourceId:uuid('source_id').notNull().references(()=>sources.id),campaignId:uuid('campaign_id').references(()=>campaigns.id),clickId:uuid('click_id').references(()=>events.id,{onDelete:'set null'}),type:text('type').notNull(),count:integer('count').notNull(),origin:text('origin').notNull(),isTest:boolean('is_test').notNull(),occurredAt:time('occurred_at').notNull(),createdAt:time('created_at').notNull().defaultNow()
+},t=>[index('conversion_source_time_idx').on(t.sourceId,t.occurredAt)]);
+export const audit = pgTable('audit',{id:uuid('id').primaryKey().defaultRandom(),actor:text('actor').notNull(),action:text('action').notNull(),details:jsonb('details').notNull(),createdAt:time('created_at').notNull().defaultNow()});
+export const linkHistory = pgTable('link_history',{id:uuid('id').primaryKey().defaultRandom(),sourceId:uuid('source_id').references(()=>sources.id),network:text('network').$type<Network>().notNull(),oldUrl:text('old_url').notNull(),newUrl:text('new_url').notNull(),actor:text('actor').notNull(),createdAt:time('created_at').notNull().defaultNow()});

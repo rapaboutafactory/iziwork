@@ -1,0 +1,17 @@
+{
+	email {$CADDY_EMAIL}
+	admin off
+}
+
+{$CADDY_DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+	# Полные access logs отключены: URL могут содержать метки, IP не сохраняются.
+	# Приложение получает клиентский адрес только от этого закрытого reverse proxy.
+	reverse_proxy app:3000
+}

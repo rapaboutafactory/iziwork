@@ -1,0 +1,21 @@
+.motiv-landing button.nav-start{background:transparent;color:inherit;font-size:inherit;font-weight:inherit}
+.motiv-landing button.nav-start:hover{background:var(--surface)}
+.motiv-landing .hero-anchor{padding:0;border:0;background:none;color:inherit;text-align:left;line-height:1.65;max-width:425px;cursor:pointer}
+.motiv-landing .hero-anchor>.hero-anchor-label{display:block;min-width:0}
+.motiv-landing .hero-anchor>.hero-anchor-icon{flex:0 0 28px}
+.motiv-landing .contact-dialog{position:fixed;inset:0;width:min(660px,calc(100% - 32px));max-width:none;max-height:calc(100dvh - 32px);margin:auto;padding:0;border:1px solid #e2e7db;border-radius:28px;background:#fff;color:var(--ink);box-shadow:0 28px 120px #17201240;overflow:auto;overscroll-behavior:contain}
+.contact-dialog::backdrop{background:#17201270;backdrop-filter:blur(6px)}
+.contact-dialog-panel{position:relative;padding:38px;overflow-wrap:anywhere}
+.motiv-landing .contact-dialog-close{position:absolute;top:17px;right:17px;display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);transition:background .2s}
+.motiv-landing .contact-dialog-close:hover{background:var(--surface)}
+.contact-dialog-badge{display:grid;place-items:center;width:52px;height:52px;margin-bottom:22px;border-radius:17px;background:var(--lime);color:#30451b}
+.contact-dialog-panel h2{max-width:480px;font-size:32px;font-weight:600;line-height:1.15;letter-spacing:-.045em;outline:none}
+.contact-dialog-panel>p{max-width:490px;margin-top:14px;font-size:14px;line-height:1.7;color:var(--muted)}
+.contact-dialog .social-grid{grid-template-columns:1fr;gap:10px;margin-top:26px}
+.contact-dialog .social-card{min-height:80px;flex-wrap:nowrap;align-content:normal;gap:16px;padding:15px 18px;border-radius:16px}
+.contact-dialog .social-card-copy{width:auto}
+.contact-dialog .social-card-name{font-size:17px}
+.contact-dialog .social-card-action{font-size:11px}
+.contact-dialog .social-card-arrow{position:static;width:18px;height:18px;margin-left:auto}
+@media(max-width:600px){.motiv-landing .contact-dialog{border-radius:22px}.contact-dialog-panel{padding:30px 22px 22px}.motiv-landing .contact-dialog-close{top:14px;right:14px}.contact-dialog-badge{width:46px;height:46px;border-radius:14px;margin-bottom:22px}.contact-dialog-panel h2{font-size:28px;padding-right:15px}.contact-dialog-panel>p{font-size:13px}.contact-dialog .social-grid{margin-top:22px}.contact-dialog .social-card{padding:14px;min-height:78px;gap:13px}.contact-dialog .social-card-name{font-size:16px}.contact-dialog .social-card-action{font-size:10px}}
+@media(prefers-reduced-motion:no-preference){.contact-dialog[open]{animation:contact-appear .18s ease-out}@keyframes contact-appear{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}}

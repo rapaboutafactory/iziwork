@@ -1,0 +1,98 @@
+name: motiv
+
+x-app: &app
+  image: motiv-app:local
+  build: .
+  env_file: .env
+  environment: &app-env
+    NODE_ENV: production
+    APP_URL: ${APP_URL:?Set APP_URL to your HTTPS domain}
+    DATABASE_URL: postgresql://motiv:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD (hex characters recommended)}@db:5432/motiv
+    AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+    POSTBACK_SECRET: ${POSTBACK_SECRET:?Set POSTBACK_SECRET}
+    TRUST_PROXY: "true"
+    PORT: "3000"
+  init: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  networks:
+    - backend
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: motiv
+      POSTGRES_USER: motiv
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - backend
+    # Порт PostgreSQL намеренно не опубликован на VPS.
+
+  app:
+    <<: *app
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      CADDY_DOMAIN: ${CADDY_DOMAIN:?Set CADDY_DOMAIN (domain only)}
+      CADDY_EMAIL: ${CADDY_EMAIL:?Set CADDY_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend
+
+  migrate:
+    <<: *app
+    command: ["pnpm", "db:migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["tools"]
+
+  retention:
+    <<: *app
+    command: ["sh", "scripts/retention-loop.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles: ["maintenance"]
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  backend:

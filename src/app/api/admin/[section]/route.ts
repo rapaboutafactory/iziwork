@@ -1,0 +1,7 @@
+import {requireAdmin,apiError,readJson,limit} from '@/lib/security';
+import {bootstrap,mutate} from '@/lib/admin-service';
+import {csvExport,qrExport} from '@/lib/exports';
+import {permanentDelete} from '@/lib/permanent-delete';
+export async function GET(req:Request,{params}:{params:Promise<{section:string}>}){try{const user=await requireAdmin(req.headers);const {section}=await params;const q=new URL(req.url).searchParams;await limit('admin-read:'+user.id,180,60);if(section==='bootstrap')return Response.json(await bootstrap(q),{headers:{'Cache-Control':'no-store'}});if(section==='export')return await csvExport(q);if(section==='qr'){await limit('qr:'+user.id,20,60);return await qrExport(q);}return Response.json({error:'Не найдено'},{status:404});}catch(e){return apiError(e);}}
+export async function POST(req:Request,{params}:{params:Promise<{section:string}>}){try{const user=await requireAdmin(req.headers,true);await limit('admin-write:'+user.id,100,60);const {section}=await params;return Response.json(await mutate(section,await readJson(req),user.email),{headers:{'Cache-Control':'no-store'}});}catch(e){return apiError(e);}}
+export async function DELETE(req:Request,{params}:{params:Promise<{section:string}>}){try{const user=await requireAdmin(req.headers,true);await limit('admin-delete:'+user.id,20,60);const {section}=await params;return Response.json(await permanentDelete(section,await readJson(req),user.email),{headers:{'Cache-Control':'no-store'}});}catch(e){return apiError(e);}}
